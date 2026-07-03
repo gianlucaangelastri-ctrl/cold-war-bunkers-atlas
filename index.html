@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlante Digitale: Bunker della Guerra Fredda</title>
     
-    <!-- Carica i fogli di stile di Leaflet e dei Cluster -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -14,11 +13,10 @@
         body { margin: 0; padding: 0; font-family: sans-serif; }
         #mappa { width: 100vw; height: 100vh; }
         
-        /* Stile personalizzato per i gruppi di marker */
         .cluster-custom {
             width: 3rem;
             height: 3rem;
-            background-color: #2c3e50; /* Colore scuro più adatto al tema militare */
+            background-color: #2c3e50;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -35,20 +33,16 @@
 
     <div id="mappa"></div>
 
-    <!-- Carica le librerie JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     
     <script>
-        // Inizializza la mappa centrata sull'Italia
         const map = L.map('mappa').setView([43.0, 12.0], 6);
 
-        // Livello cartografico (qui uso CartoDB Voyager per un aspetto tecnico e pulito)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(map);
 
-        // Gruppo cluster con stile personalizzato
         const clusterGroup = L.markerClusterGroup({
             iconCreateFunction: function(cluster) {
                 return L.divIcon({
@@ -59,22 +53,24 @@
             }
         });
 
-        // Dati dei siti militari/bunker
-        const sitiMilitari = [
-            { lat: 45.316, lng: 11.666, titolo: "1° ROC Monte Venda", info: "Ex base militare NATO operativa durante la Guerra Fredda." },
-            { lat: 45.500, lng: 11.500, titolo: "Sito Radar Alpha", info: "Struttura di monitoraggio aereo." },
-            { lat: 45.450, lng: 11.600, titolo: "Postazione Difensiva", info: "Bunker sotterraneo dismesso." },
-            { lat: 40.850, lng: 14.268, titolo: "Comando Sud", info: "Infrastruttura logistica e di coordinamento." }
-        ];
+        // Carica dinamicamente il file GeoJSON
+        fetch('siti.geojson')
+            .then(response => response.json())
+            .then(data => {
+                const geoJsonLayer = L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.titolo) {
+                            const popupContent = `<h3 style="margin: 0 0 5px 0;">${feature.properties.titolo}</h3>
+                                                  <p style="margin: 0;">${feature.properties.info || ''}</p>`;
+                            layer.bindPopup(popupContent);
+                        }
+                    }
+                });
 
-        // Aggiunta dei marker al cluster
-        sitiMilitari.forEach(sito => {
-            const marker = L.marker([sito.lat, sito.lng]);
-            marker.bindPopup(`<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0;">${sito.info}</p>`);
-            clusterGroup.addLayer(marker);
-        });
-
-        map.addLayer(clusterGroup);
+                clusterGroup.addLayer(geoJsonLayer);
+                map.addLayer(clusterGroup);
+            })
+            .catch(error => console.error("Errore nel caricamento del file GeoJSON:", error));
     </script>
 
 </body>
