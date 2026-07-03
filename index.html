@@ -36,6 +36,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     
+    <!-- QUI RICHIAMIAMO IL TUO FILE DEI DATI -->
+    <script src="dati.js"></script>
+    
     <script>
         const map = L.map('mappa').setView([43.0, 12.0], 6);
 
@@ -53,24 +56,14 @@
             }
         });
 
-        // Carica dinamicamente il file GeoJSON
-        fetch('siti.geojson')
-            .then(response => response.json())
-            .then(data => {
-                const geoJsonLayer = L.geoJSON(data, {
-                    onEachFeature: function (feature, layer) {
-                        if (feature.properties && feature.properties.titolo) {
-                            const popupContent = `<h3 style="margin: 0 0 5px 0;">${feature.properties.titolo}</h3>
-                                                  <p style="margin: 0;">${feature.properties.info || ''}</p>`;
-                            layer.bindPopup(popupContent);
-                        }
-                    }
-                });
+        // La mappa legge in automatico la lista "sitiMilitari" dal file dati.js
+        sitiMilitari.forEach(sito => {
+            const marker = L.marker([sito.lat, sito.lng]);
+            marker.bindPopup(`<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0;">${sito.info}</p>`);
+            clusterGroup.addLayer(marker);
+        });
 
-                clusterGroup.addLayer(geoJsonLayer);
-                map.addLayer(clusterGroup);
-            })
-            .catch(error => console.error("Errore nel caricamento del file GeoJSON:", error));
+        map.addLayer(clusterGroup);
     </script>
 
 </body>
