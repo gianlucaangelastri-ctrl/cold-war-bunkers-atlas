@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlante Digitale: Bunker della Guerra Fredda</title>
+    
+    <!-- Carica i fogli di stile di Leaflet e dei Cluster -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; }
+        #mappa { width: 100vw; height: 100vh; }
+        
+        /* Stile personalizzato per i gruppi di marker */
+        .cluster-custom {
+            width: 3rem;
+            height: 3rem;
+            background-color: #2c3e50; /* Colore scuro più adatto al tema militare */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border: 3px solid #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mappa"></div>
+
+    <!-- Carica le librerie JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    
+    <script>
+        // Inizializza la mappa centrata sull'Italia
+        const map = L.map('mappa').setView([43.0, 12.0], 6);
+
+        // Livello cartografico (qui uso CartoDB Voyager per un aspetto tecnico e pulito)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        }).addTo(map);
+
+        // Gruppo cluster con stile personalizzato
+        const clusterGroup = L.markerClusterGroup({
+            iconCreateFunction: function(cluster) {
+                return L.divIcon({
+                    html: '<div class="cluster-custom">' + cluster.getChildCount() + '</div>',
+                    className: '',
+                    iconSize: [48, 48]
+                });
+            }
+        });
+
+        // Dati dei siti militari/bunker
+        const sitiMilitari = [
+            { lat: 45.316, lng: 11.666, titolo: "1° ROC Monte Venda", info: "Ex base militare NATO operativa durante la Guerra Fredda." },
+            { lat: 45.500, lng: 11.500, titolo: "Sito Radar Alpha", info: "Struttura di monitoraggio aereo." },
+            { lat: 45.450, lng: 11.600, titolo: "Postazione Difensiva", info: "Bunker sotterraneo dismesso." },
+            { lat: 40.850, lng: 14.268, titolo: "Comando Sud", info: "Infrastruttura logistica e di coordinamento." }
+        ];
+
+        // Aggiunta dei marker al cluster
+        sitiMilitari.forEach(sito => {
+            const marker = L.marker([sito.lat, sito.lng]);
+            marker.bindPopup(`<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0;">${sito.info}</p>`);
+            clusterGroup.addLayer(marker);
+        });
+
+        map.addLayer(clusterGroup);
+    </script>
+
+</body>
+</html>
