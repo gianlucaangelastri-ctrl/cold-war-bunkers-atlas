@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlante Digitale: Bunker della Guerra Fredda</title>
     
+    <!-- Fogli di stile di Leaflet e dei cluster -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -13,19 +14,20 @@
         body { margin: 0; padding: 0; font-family: sans-serif; }
         #mappa { width: 100vw; height: 100vh; }
         
+        /* Stile personalizzato per i raggruppamenti circolari */
         .cluster-custom {
             width: 3rem;
             height: 3rem;
-            background-color: #2c3e50;
+            background-color: #34495e; /* Un grigio ardesia che stacca sullo sfondo nero */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             font-size: 1.5rem;
-            color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            border: 3px solid #ecf0f1;
+            color: #ffffff; /* Testo bianco */
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            border: 2px solid #bdc3c7;
         }
     </style>
 </head>
@@ -33,22 +35,23 @@
 
     <div id="mappa"></div>
 
+    <!-- Librerie JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     
-    <!-- Richiama il database esterno con le coordinate -->
+    <!-- Richiama i dati dal tuo file JS -->
     <script src="dati.js"></script>
     
     <script>
-        // Inizializza la mappa centrata sull'Italia con zoom adeguato
+        // Inizializza la mappa centrata sull'Italia (zoom 5)
         const map = L.map('mappa').setView([41.5, 12.5], 5);
 
-        // Livello cartografico
+        // NUOVO TILELAYER: Stadia.AlidadeSmoothDark
         L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Configura la grafica per il raggruppamento dei marker (cluster)
+        // Creazione del gruppo cluster
         const clusterGroup = L.markerClusterGroup({
             iconCreateFunction: function(cluster) {
                 return L.divIcon({
@@ -59,13 +62,22 @@
             }
         });
 
-        // Legge la lista "sitiMilitari" dal file dati.js e posiziona i marker
+        // Ciclo che disegna i punti e le foto sulla mappa
         sitiMilitari.forEach(sito => {
             const marker = L.marker([sito.lat, sito.lng]);
-            marker.bindPopup(`<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0;">${sito.info}</p>`);
+            
+            // LA MAGIA DELLE FOTO: Se nel file dati c'è il link, crea il tag HTML dell'immagine, sennò lo lascia vuoto
+            const fotoHTML = sito.immagine ? `<img src="${sito.immagine}" style="width: 100%; border-radius: 4px; margin-bottom: 8px;">` : '';
+            
+            // Unisce la foto (se c'è), il titolo e la descrizione nel popup
+            marker.bindPopup(`${fotoHTML}<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0; font-size: 0.9rem;">${sito.info}</p>`, {
+                maxWidth: 300 // Allarga il popup per evitare che la foto sia troppo piccola
+            });
+            
             clusterGroup.addLayer(marker);
         });
 
+        // Aggiunge tutto alla mappa
         map.addLayer(clusterGroup);
     </script>
 
