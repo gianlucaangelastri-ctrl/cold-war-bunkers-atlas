@@ -11,11 +11,12 @@ const sitiMilitari = [
         titolo: "DC-75", 
         info: "Montelibretti, Roma" 
     },
-    { 
+   { 
         lat: 45.5569, 
         lng: 10.7697, 
         titolo: "JCOC West Star - Bunker NATO", 
-        info: "Affi, Verona" 
+        info: "Affi, Verona",
+        immagine: "weststar.jpg" 
     },
     { 
         lat: 45.5166, 
