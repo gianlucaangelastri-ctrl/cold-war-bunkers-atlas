@@ -16,7 +16,7 @@ const sitiMilitari = [
         lng: 10.7697, 
         titolo: "JCOC West Star - Bunker NATO", 
         info: "Affi, Verona",
-        immagine: "IMG/weststar.jpg"
+        immagine: "img/weststar.jpg"
     },
     { 
         lat: 45.5166, 
