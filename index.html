@@ -36,16 +36,19 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     
-    <!-- QUI RICHIAMIAMO IL TUO FILE DEI DATI -->
+    <!-- Richiama il database esterno con le coordinate -->
     <script src="dati.js"></script>
     
     <script>
-        const map = L.map('mappa').setView([43.0, 12.0], 6);
+        // Inizializza la mappa centrata sull'Italia con zoom adeguato
+        const map = L.map('mappa').setView([41.5, 12.5], 5);
 
+        // Livello cartografico
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(map);
 
+        // Configura la grafica per il raggruppamento dei marker (cluster)
         const clusterGroup = L.markerClusterGroup({
             iconCreateFunction: function(cluster) {
                 return L.divIcon({
@@ -56,7 +59,7 @@
             }
         });
 
-        // La mappa legge in automatico la lista "sitiMilitari" dal file dati.js
+        // Legge la lista "sitiMilitari" dal file dati.js e posiziona i marker
         sitiMilitari.forEach(sito => {
             const marker = L.marker([sito.lat, sito.lng]);
             marker.bindPopup(`<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0;">${sito.info}</p>`);
