@@ -4,37 +4,42 @@ const sitiMilitari = [
         lng: 12.5019, 
         titolo: "Gallerie del Monte Soratte", 
         info: "Sant'Oreste, Roma" 
+        immagine: "img/soratte.jpg"
     },
     { 
         lat: 42.1288, 
-        lng: 12.7238, 
+        lng: 12.7238,
         titolo: "DC-75", 
-        info: "Montelibretti, Roma" 
+        info: "Montelibretti, Roma"
+        immagine: "img/dc75.jpg"
     },
 { 
         lat: 45.5569, 
         lng: 10.7697, 
-        titolo: "JCOC West Star - Bunker NATO", 
+        titolo: "“Site B” West Star - Bunker NATO", 
         info: "Affi, Verona",
         immagine: "img/weststar.jpg"
     },
     { 
         lat: 45.5166, 
         lng: 11.0166, 
-        titolo: "Back Yard - Bunker NATO", 
+        titolo: "“Site A” Back Yard - Bunker NATO", 
         info: "Grezzana, Verona" 
+        immagine: "img/backyard.jpg"
     },
     { 
         lat: 41.2165, 
         lng: 13.9585, 
         titolo: "Base NATO PROTO - MARINA", 
         info: "Mondragone, Caserta" 
+        immagine: "img/proto.jpg"
     },
     { 
         lat: 42.0160, 
         lng: 12.3551, 
         titolo: "COCAN - Bunker NATO - MARINA", 
-        info: "Santarosa, Roma" 
+        info: "Santarosa, Roma"
+        immagine: "img/santarosa.jpg"
     },
     { 
         lat: 37.2407, 
@@ -53,17 +58,20 @@ const sitiMilitari = [
         lng: 12.7061, 
         titolo: "COSMA Centro Operativo S.M. Aereonautica", 
         info: "Monte Cavo, Roma (ex 2° ROC_Base NATO, poi COSMA con sale di guerra)" 
+        immagine: "img/montecavo.jpg"
     },
     { 
         lat: 45.3160, 
         lng: 11.6660, 
-        titolo: "1° ROC_Base NATO Venda", 
+        titolo: "1° ROC_Base NATO Venda - Rupe", 
         info: "Teolo, Padova" 
+        immagine: "img/venda.jpg"
     },
     { 
         lat: 40.7027, 
         lng: 17.3364, 
-        titolo: "3° ROC_Base NATO", 
+        titolo: "3° ROC_Base NATO - Sasso", 
         info: "Martina Franca, Taranto" 
+        immagine: "img/martinafranca.jpg"
     }
 ];
