@@ -44,8 +44,8 @@ const sitiMilitari = [
     { 
         lat: 37.2407, 
         lng: 15.2215, 
-        titolo: "Palombara Bunker - MARINA, sede alternata di Santarosa", 
-        info: "Augusta, Siracusa"
+        titolo: "Bunker - MARINA, sede alternata di Santarosa", 
+        info: "Melilli, Siracusa"
     },
     { 
         lat: 41.8315, 
