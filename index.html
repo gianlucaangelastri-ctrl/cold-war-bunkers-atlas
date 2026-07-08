@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlante Digitale: Bunker della Guerra Fredda</title>
-
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-
+    
     <style>
         body { margin: 0; padding: 0; font-family: sans-serif; }
         #mappa { width: 100vw; height: 100vh; }
-
+        
         .cluster-custom {
             width: 3rem;
             height: 3rem;
-            background-color: #34495e; 
+            background-color: #2c3e50; 
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -25,7 +25,7 @@
             font-size: 1.5rem;
             color: #ffffff; 
             box-shadow: 0 0 10px rgba(0,0,0,0.8);
-            border: 2px solid #bdc3c7;
+            border: 2px solid #ffffff;
         }
     </style>
 </head>
@@ -35,13 +35,110 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-    <script src="dati.js"></script>
-
+    
     <script>
+        // DATI INSERITI DIRETTAMENTE QUI PER AGGIRARE LA CACHE
+        const sitiMilitari = [
+            {
+                lat: 45.5569, lng: 10.7697,
+                titolo: "West Star", sottotitolo: "Site B",
+                categoria: "C3I | Static War Headquarters - Joint Primary",
+                info: "Monte Moscal, Affi (Verona)", immagine: "img/weststar.jpg"
+            },
+            {
+                lat: 45.5166, lng: 11.0166,
+                titolo: "Back Yard", sottotitolo: "Site A",
+                categoria: "C3I | Static War Headquarters - Joint Alternate",
+                info: "Grezzana (Verona)", immagine: "img/backyard.jpg"
+            },
+            {
+                lat: 41.2165, lng: 13.9585,
+                titolo: "Base PROTO", sottotitolo: "",
+                categoria: "C3I | Static War Headquarters - Joint",
+                info: "Monte Massico, Mondragone (Caserta)", immagine: "img/proto.jpg"
+            },
+            {
+                lat: 41.9187, lng: 12.4085,
+                titolo: "C.O.P.I.", sottotitolo: "Centro Operativo Interforze",
+                categoria: "C3I | Static War Headquarters - Joint",
+                info: "Forte Braschi, Roma", immagine: ""
+            },
+            {
+                lat: 45.3160, lng: 11.6660,
+                titolo: "1° R.O.C. Monte Venda", sottotitolo: "Rupe",
+                categoria: "C3I | Static War Headquarters - Air Defence",
+                info: "Monte Venda, Teolo (Padova)", immagine: "img/venda.jpg"
+            },
+            {
+                lat: 41.7583, lng: 12.7061,
+                titolo: "2° R.O.C. / C.O.S.M.A. Monte Cavo", sottotitolo: "Centro Operativo S.M. Aeronautica",
+                categoria: "C3I | Static War Headquarters - Air Defence",
+                info: "Monte Cavo, Rocca di Papa (Roma)", immagine: "img/montecavo.jpg"
+            },
+            {
+                lat: 40.7027, lng: 17.3364,
+                titolo: "3° R.O.C./S.O.C.", sottotitolo: "Sasso",
+                categoria: "C3I | Static War Headquarters - Air Defence",
+                info: "Martina Franca (Taranto)", immagine: "img/martinafranca.jpg"
+            },
+            {
+                lat: 42.0160, lng: 12.3551,
+                titolo: "Comando Protetto Santa Rosa", sottotitolo: "COMEDCENT / Quartier Generale Marina",
+                categoria: "C3I | Static War Headquarters - Naval Primary",
+                info: "Comprensorio militare di Santa Rosa, Roma", immagine: "img/santarosa.jpg"
+            },
+            {
+                lat: 37.2407, lng: 15.2215,
+                titolo: "Comando Protetto Palombara", sottotitolo: "",
+                categoria: "C3I | Static War Headquarters - Naval Alternate",
+                info: "Località Palombara, Melilli (Siracusa)", immagine: "img/palombara.jpg"
+            },
+            {
+                lat: 46.1380, lng: 13.1230,
+                titolo: "P.C. Main", sottotitolo: "Posto Comando Main",
+                categoria: "C3I | Static War Headquarters - Army Primary",
+                info: "Santa Margherita di Moruzzo (Udine)", immagine: "img/pcmain.jpg"
+            },
+            {
+                lat: 46.1325, lng: 12.8637,
+                titolo: "P.C. Rear", sottotitolo: "Posto Comando Rear",
+                categoria: "C3I | Static War Headquarters - Army Alternate",
+                info: "Tauriano, Spilimbergo (Pordenone)", immagine: "img/pcrear.jpg"
+            },
+            {
+                lat: 41.8315, lng: 12.5292,
+                titolo: "C.O.S.M.E.", sottotitolo: "Centro Operativo Stato Maggiore Esercito",
+                categoria: "C3I | Static War Headquarters - Army Primary",
+                info: "Forte Appio, Roma", immagine: ""
+            },
+            {
+                lat: 42.2456, lng: 12.5019,
+                titolo: "Bunker del Monte Soratte", sottotitolo: "",
+                categoria: "Civil Defence / Continuity of Government | Government Continuity Shelter",
+                info: "Monte Soratte, Sant’Oreste (RM)", immagine: "img/soratte.jpg"
+            },
+            {
+                lat: 42.1288, lng: 12.7238,
+                titolo: "DC-75", sottotitolo: "",
+                categoria: "Civil Defence / Continuity of Government | Government Continuity Shelter",
+                info: "Montelibretti (Roma)", immagine: "img/dc75.jpg"
+            },
+            {
+                lat: 44.0950, lng: 9.8130,
+                titolo: "Centrale Elettrica Protetta dell’Acquasanta", sottotitolo: "Arsenale Militare Marittimo",
+                categoria: "Protected logistical infrastructure | Energy",
+                info: "Arsenale Militare Marittimo, Acquasanta (La Spezia)", immagine: "img/laspezia.jpg"
+            },
+            {
+                lat: 39.1975, lng: 9.1368,
+                titolo: "POL NATO Sant’Elia", sottotitolo: "",
+                categoria: "Protected logistical infrastructure | Fuel",
+                info: "Sant’Elia, Cagliari", immagine: ""
+            }
+        ];
+
         const map = L.map('mappa').setView([41.5, 12.5], 5);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
@@ -60,13 +157,34 @@
 
         sitiMilitari.forEach(sito => {
             const marker = L.marker([sito.lat, sito.lng]);
+            
+            // Logica per inserire i dati senza errori
+            let fotoHTML = '';
+            if (sito.immagine && sito.immagine !== "") {
+                fotoHTML = `<img src="${sito.immagine}" style="width: 100%; border-radius: 4px; margin-bottom: 8px;">`;
+            }
+            
+            let sottotitoloHTML = '';
+            if (sito.sottotitolo && sito.sottotitolo !== "") {
+                sottotitoloHTML = `<h4 style="margin: 0 0 4px 0; font-size: 0.95rem; color: #333;">${sito.sottotitolo}</h4>`;
+            }
 
-            const fotoHTML = sito.immagine ? `<img src="${sito.immagine}" style="width: 100%; border-radius: 4px; margin-bottom: 8px;">` : '';
+            let categoriaHTML = '';
+            if (sito.categoria && sito.categoria !== "") {
+                categoriaHTML = `<small style="display:block; margin-bottom: 6px; color: #555; font-style: italic;">${sito.categoria}</small>`;
+            }
 
-            marker.bindPopup(`${fotoHTML}<h3 style="margin: 0 0 5px 0;">${sito.titolo}</h3><p style="margin: 0; font-size: 0.9rem;">${sito.info}</p>`, {
-                maxWidth: 300 
-            });
-
+            let popupContent = `
+                <div style="text-align: left;">
+                    ${fotoHTML}
+                    <h3 style="margin: 0 0 2px 0; color: #000;">${sito.titolo}</h3>
+                    ${sottotitoloHTML}
+                    ${categoriaHTML}
+                    <p style="margin: 0; font-size: 0.9rem;"><strong>Località:</strong> ${sito.info}</p>
+                </div>
+            `;
+            
+            marker.bindPopup(popupContent, { maxWidth: 300 });
             clusterGroup.addLayer(marker);
         });
 
